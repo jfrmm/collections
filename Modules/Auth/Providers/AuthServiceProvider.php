@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\User\Providers;
+namespace Modules\Auth\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
-class UserServiceProvider extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -46,10 +46,10 @@ class UserServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('user.php'),
+            __DIR__.'/../Config/config.php' => config_path('auth.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'user'
+            __DIR__.'/../Config/config.php', 'auth'
         );
     }
 
@@ -60,7 +60,7 @@ class UserServiceProvider extends ServiceProvider
      */
     public function registerViews()
     {
-        $viewPath = resource_path('views/modules/user');
+        $viewPath = resource_path('views/modules/auth');
 
         $sourcePath = __DIR__.'/../Resources/views';
 
@@ -69,8 +69,8 @@ class UserServiceProvider extends ServiceProvider
         ],'views');
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
-            return $path . '/modules/user';
-        }, \Config::get('view.paths')), [$sourcePath]), 'user');
+            return $path . '/modules/auth';
+        }, \Config::get('view.paths')), [$sourcePath]), 'auth');
     }
 
     /**
@@ -80,12 +80,12 @@ class UserServiceProvider extends ServiceProvider
      */
     public function registerTranslations()
     {
-        $langPath = resource_path('lang/modules/user');
+        $langPath = resource_path('lang/modules/auth');
 
         if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, 'user');
+            $this->loadTranslationsFrom($langPath, 'auth');
         } else {
-            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'user');
+            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'auth');
         }
     }
 

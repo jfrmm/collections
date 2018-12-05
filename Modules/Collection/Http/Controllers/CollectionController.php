@@ -2,71 +2,91 @@
 
 namespace Modules\Collection\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Auth\Entities\User;
+use Modules\Collection\Entities\Collection;
+use Modules\Collection\Http\Requests\StoreCollection;
+use Modules\Collection\Http\Requests\UpdateCollection;
+use Modules\Collection\Transformers\CollectionTransformer;
 
 class CollectionController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * @return Response
+     *
+     * @return JsonResponse
      */
     public function index()
     {
-        return view('collection::index');
-    }
+        $collections = Collection::all();
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Response
-     */
-    public function create()
-    {
-        return view('collection::create');
+        return fractal($collections, new CollectionTransformer())->respond();
     }
 
     /**
      * Store a newly created resource in storage.
-     * @param  Request $request
-     * @return Response
+     *
+     * @param  StoreCollection $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreCollection $request)
     {
+
+        $collection = new Collection($request->validated());
+
+        $collection->creator_id = User::find(1)->id;
+        $collection->owner_id = $collection->creator_id;
+
+        $collection->save();
+
+        return fractal($collection, new CollectionTransformer())->respond();
     }
 
     /**
      * Show the specified resource.
-     * @return Response
+     *
+     * @param [int] $id
+     * @return JsonResponse
      */
-    public function show()
+    public function show($id)
     {
-        return view('collection::show');
-    }
+        $collection = Collection::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     * @return Response
-     */
-    public function edit()
-    {
-        return view('collection::edit');
+        return fractal($collection, new CollectionTransformer())->respond();
     }
 
     /**
      * Update the specified resource in storage.
-     * @param  Request $request
-     * @return Response
+     *
+     * @param UpdateCollection $request
+     * @param [int] $id
+     * @return JsonResponse
      */
-    public function update(Request $request)
+    public function update(UpdateCollection $request, $id)
     {
+        $collection = Collection::find($id);
+
+        $collection->update($request->validated());
+
+        return fractal($collection, new CollectionTransformer())->respond();
+
     }
 
     /**
      * Remove the specified resource from storage.
-     * @return Response
+     *
+     * @param [int] $id
+     * @return JsonResponse
      */
-    public function destroy()
+    public function destroy($id)
     {
+        $collection = Collection::find($id);
+
+        $collectionCopy = $collection;
+
+        $collection->delete();
+
+        return fractal($collectionCopy, new CollectionTransformer())->respond();
     }
 }

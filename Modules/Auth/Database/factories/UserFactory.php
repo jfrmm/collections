@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use Modules\User\Entities\User;
+use Modules\Auth\Entities\User;
 
 /*
 |--------------------------------------------------------------------------

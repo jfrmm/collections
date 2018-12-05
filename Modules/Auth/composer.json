@@ -1,5 +1,5 @@
 {
-    "name": "nwidart/user",
+    "name": "nwidart/auth",
     "description": "",
     "authors": [
         {
@@ -10,7 +10,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Modules\\User\\Providers\\UserServiceProvider"
+                "Modules\\Auth\\Providers\\AuthServiceProvider"
             ],
             "aliases": {
                 
@@ -19,7 +19,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Modules\\User\\": ""
+            "Modules\\Auth\\": ""
         }
     }
 }

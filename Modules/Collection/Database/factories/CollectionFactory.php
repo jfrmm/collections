@@ -2,7 +2,7 @@
 
 use Faker\Generator as Faker;
 use Modules\Collection\Entities\Collection;
-use Modules\User\Entities\User;
+use Modules\Auth\Entities\User;
 
 $factory->define(Collection::class, function (Faker $faker) {
 
