@@ -11,6 +11,12 @@
 |
  */
 
-Route::middleware('api')->group(function () {
-    Route::apiResource('collections', 'CollectionController');
-});
+Route::middleware('api')
+    ->group(function () {
+        Route::apiResource('collections', 'CollectionController');
+    });
+
+Route::middleware('api')
+    ->group(function () {
+        Route::apiResource('collectibles', 'CollectibleController')->except('index');
+    });

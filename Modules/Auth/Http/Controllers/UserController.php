@@ -30,6 +30,10 @@ class UserController extends Controller
     {
         $user = User::find($id);
 
+        if (!$user) {
+            return response()->json(null, 204);
+        }
+
         return fractal($user, new UserTransformer())->respond();
     }
 }

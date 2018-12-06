@@ -4,22 +4,19 @@ namespace Modules\Collection\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\Auth\Entities\User;
 
-class Collection extends Model
+class Collectible extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name'];
-
-    protected $dates = ['deleted_at'];
+    protected $fillable = ['name', 'collection_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function creator()
     {
-        return $this->belongsTo(User::class, 'creator_id');
+        return $this->belongsTo(Collection::class, 'creator_id');
     }
 
     /**
@@ -27,14 +24,14 @@ class Collection extends Model
      */
     public function owner()
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(Collection::class, 'owner_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function collectibles()
+    public function collection()
     {
-        return $this->hasMany(Collectible::class, 'collection_id');
+        return $this->belongsTo(Collection::class);
     }
 }

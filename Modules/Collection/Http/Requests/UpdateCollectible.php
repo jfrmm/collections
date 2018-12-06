@@ -4,7 +4,7 @@ namespace Modules\Collection\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCollection extends FormRequest
+class UpdateCollectible extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,6 +15,7 @@ class StoreCollection extends FormRequest
     {
         return [
             'name' => 'required|string|min:3|max:192',
+            'collection_id' => 'required|exists:collections,id|numeric',
         ];
     }
 

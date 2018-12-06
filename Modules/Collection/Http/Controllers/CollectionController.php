@@ -2,7 +2,6 @@
 
 namespace Modules\Collection\Http\Controllers;
 
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Auth\Entities\User;
 use Modules\Collection\Entities\Collection;
@@ -17,11 +16,24 @@ class CollectionController extends Controller
      *
      * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $collections = Collection::all();
+        $collections = Collection::query();
 
-        return fractal($collections, new CollectionTransformer())->respond();
+        $fractal = fractal($collections->get(), new CollectionTransformer());
+
+        // add relationships
+        if ($request->query('includes')) {
+            $relationships = explode(',', $request->query('includes'));
+
+            if (in_array('collectibles', $relationships)) {
+                $collections->with('collectibles');
+            }
+
+            $fractal->parseIncludes($request->query('includes'));
+        }
+
+        return $fractal->respond();
     }
 
     /**
@@ -32,7 +44,6 @@ class CollectionController extends Controller
      */
     public function store(StoreCollection $request)
     {
-
         $collection = new Collection($request->validated());
 
         $collection->creator_id = User::find(1)->id;
@@ -53,6 +64,10 @@ class CollectionController extends Controller
     {
         $collection = Collection::find($id);
 
+        if (!$collection) {
+            return response()->json(null, 204);
+        }
+
         return fractal($collection, new CollectionTransformer())->respond();
     }
 
@@ -67,10 +82,13 @@ class CollectionController extends Controller
     {
         $collection = Collection::find($id);
 
+        if (!$collection) {
+            return response()->json(null, 204);
+        }
+
         $collection->update($request->validated());
 
         return fractal($collection, new CollectionTransformer())->respond();
-
     }
 
     /**
@@ -82,6 +100,10 @@ class CollectionController extends Controller
     public function destroy($id)
     {
         $collection = Collection::find($id);
+
+        if (!$collection) {
+            return response()->json(null, 204);
+        }
 
         $collectionCopy = $collection;
 
